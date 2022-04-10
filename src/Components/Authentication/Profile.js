@@ -1,5 +1,5 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import './Auth.css';
 
 
@@ -34,7 +34,10 @@ const Profile = ({ setAuthcheck }) => {
                 </div>
             </div>
             <div className="mt-5 text-center">
-                <h4 className="mb-0">Benjamin Tims</h4> <span className="text-muted d-block mb-2">Los Angles</span> <button className="btn btn-primary btn-sm follow">Follow</button>
+                <h4 className="mb-0">Benjamin Tims</h4> <span className="text-muted d-block mb-2">User Profile</span> 
+
+                <Link to='/all_student' className="btn btn-primary btn-sm follow">All User</Link>
+
                 <div className="d-flex justify-content-between align-items-center mt-4 px-4">
                     <div className="stats">
                         <h6 className="mb-0">Followers</h6> <span>8,797</span>
@@ -46,8 +49,10 @@ const Profile = ({ setAuthcheck }) => {
                         <h6 className="mb-0">Ranks</h6> <span>129</span>
                     </div>
                 </div>
+
                 <hr />
             <button onClick={ handleLogOut } className="btn-info d-block w-100" style={{ color : 'black', borderRadius : '10px', border : 'none' }}>LogOut</button>
+
             </div>
             
         </div>

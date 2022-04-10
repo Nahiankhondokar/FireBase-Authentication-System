@@ -1,9 +1,25 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import './Auth.css';
 
 
 
-const Profile = () => {
+const Profile = ({ setAuthcheck }) => {
+
+    //navigate
+    const navigate = useNavigate();
+
+    // logout
+    const handleLogOut = (e) => {
+        e.preventDefault();
+
+        sessionStorage.removeItem('auth');
+        setAuthcheck(false);
+        navigate('/');
+    }
+
+
+
   return (
     <>
     
@@ -30,7 +46,10 @@ const Profile = () => {
                         <h6 className="mb-0">Ranks</h6> <span>129</span>
                     </div>
                 </div>
+                <hr />
+            <button onClick={ handleLogOut } className="btn-info d-block w-100" style={{ color : 'black', borderRadius : '10px', border : 'none' }}>LogOut</button>
             </div>
+            
         </div>
     </div>
     

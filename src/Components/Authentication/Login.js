@@ -6,7 +6,7 @@ import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
 import './Auth.css';
 
 
-const Login = () => {
+const Login = ({ authcheck, setAuthcheck }) => {
 
   // navigate hook
   const navigate = useNavigate();
@@ -52,6 +52,8 @@ const Login = () => {
       signInWithEmailAndPassword(auth, login.email, login.password)
       .then(useCredential => {
 
+        sessionStorage.setItem('auth', JSON.stringify(true));
+        setAuthcheck(true);
         navigate('/profile');
 
       })

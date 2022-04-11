@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Alert, Button, Card, CloseButton, Col, Container, Form, Row, Table } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
-import { addDoc, collection, doc, getFirestore, setDoc } from 'firebase/firestore';
+import { addDoc, collection, getFirestore, onSnapshot } from 'firebase/firestore';
 import './student.css';
 import { app } from '../../firebase';
 
@@ -21,7 +21,7 @@ const Student = ({ setAuthcheck }) => {
         photo : ''
     });
 
-console.log(studentinput);
+
      // alert state
     const [alert, setAlert] = useState({
         msg : '',
@@ -60,7 +60,8 @@ console.log(studentinput);
 
     }else{
         
-      await addDoc(collection(db, "users"), {
+        // Data Store
+        await addDoc(collection(db, "users"), {
 
         name : studentinput.name,
         gender : studentinput.gender,
@@ -78,6 +79,25 @@ console.log(studentinput);
 
 
   }
+
+  // Get all data state
+  const [students, setStudents] = useState([]);
+
+  // get all data form firebase store
+  useEffect(() => {
+
+    onSnapshot(collection(db, "users"), (data) => {
+
+        let data_list = [];
+        data.docs.forEach(items => {
+            data_list.push(items.data());
+        });
+
+        setStudents(data_list);
+
+    });
+
+  }, [db]);
 
 
 
@@ -134,25 +154,34 @@ console.log(studentinput);
                                         <th>#</th>
                                         <th>Name</th>
                                         <th>Gender</th>
-                                        <th>Skill</th>
+                                        <th>Photo</th>
                                         <th>Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     
-                                    <tr>
-                                        <td>1</td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td>
-                                        <Button onClick='' variant='info' className="btn-sm">View </Button>&nbsp;
+                                    {
+                                        students.map((data, index) => 
+                                        
+                                        <tr>
+                                            <td>{ index + 1 }</td>
+                                            <td>{ data.name }</td>
+                                            <td>{ data.gender }</td>
+                                            <td>
+                                                <img style={{ widht : '30px', height : '30px' }} src={ data.photo } alt="" />
+                                            </td>
+                                            <td>
+                                            <Button onClick='' variant='info' className="btn-sm">View </Button>&nbsp;
 
-                                        <Button variant='warning' className="btn-sm">Edit</Button>&nbsp;
+                                            <Button variant='warning' className="btn-sm">Edit</Button>&nbsp;
 
-                                        <Button onClick='' variant='danger' className="btn-sm">Delete</Button>
-                                        </td>
-                                    </tr>
+                                            <Button onClick='' variant='danger' className="btn-sm">Delete</Button>
+                                            </td>
+                                        </tr>
+                                        
+                                        )
+                                    }
+                                  
                                    
                                 
                                 </tbody>

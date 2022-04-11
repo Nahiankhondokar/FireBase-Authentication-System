@@ -91,7 +91,7 @@ console.log(this.state);
 
               <input type="password" value={ this.state.password } onChange={ (e) => this.setState({ password : e.target.value }) } placeholder="Password" id="password" />
 
-              <Button id='submit-btn' type='submit' className='btn-info'>Submit</Button>
+              <Button id='submit-btn' type='submit' className='btn-info'>Register</Button>
             </form>
             <hr />
             <Link to="/" style={{ textDecoration: 'none', color : 'black' }}>User Login</Link>

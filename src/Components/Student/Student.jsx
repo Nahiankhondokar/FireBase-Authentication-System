@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Alert, Button, Card, CloseButton, Col, Container, Form, Row, Table } from 'react-bootstrap';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { addDoc, collection, getFirestore, onSnapshot } from 'firebase/firestore';
 import './student.css';
 import { app } from '../../firebase';
@@ -145,7 +145,10 @@ const Student = ({ setAuthcheck }) => {
                     <Card className="w-100">
                         <Card.Header className="d-flex justify-content-between">
                             <h3>All User</h3>
-                            <button onClick={ handleLogOut } className="btn-info" style={{ color : 'black', borderRadius : '10px', border : 'none', width : '100px' }}>LogOut</button>
+                            <div className="btns">
+                                <Link to="/profile" className="btn-primary" style={{ color : 'white', borderRadius : '5px', border : 'none', textDecoration : 'none', padding : '10px' }}>Profile</Link> &nbsp;
+                                <button onClick={ handleLogOut } className="btn-info" style={{ color : 'black', borderRadius : '5px', border : 'none', padding : '10px' }}>LogOut</button>
+                            </div>
                         </Card.Header>
                         <Card.Body>
                             <Table>

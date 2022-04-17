@@ -4,15 +4,39 @@ import { Link, useNavigate } from 'react-router-dom';
 import { addDoc, collection, getFirestore, onSnapshot } from 'firebase/firestore';
 import './student.css';
 import { app } from '../../firebase';
+import { getStorage, ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
+
 
 
 const Student = ({ setAuthcheck }) => {
 
-    // Get firebase databse
-    const db = getFirestore(app);
+    // get Storage connection
+    const storage = getStorage(app);
 
-    //navigate
-    const navigate = useNavigate();
+    // Student File preview System
+    let rmv_btn = document.querySelector('#rmv_btn');
+    const [preview, setPreview] = useState('');
+    const handlerFileManage = (e) => {
+        
+        let file_name = e.target.files[0];
+        let img_url = URL.createObjectURL(file_name); 
+        setPreview(img_url);
+        rmv_btn.style.display = "block";
+        rmv_btn.style.margin = "10px";
+        setFile(file_name);
+
+    }
+
+    // img remove
+    const handleRmvImg = (e) => {
+        setPreview('');
+        rmv_btn.style.display = "none";
+
+    }
+  
+    // File Upload Manage
+    const [file, setFile] = useState('');
+
 
     // form data
     const [studentinput, setStudentinput] = useState({
@@ -20,6 +44,14 @@ const Student = ({ setAuthcheck }) => {
         gender : '',
         photo : ''
     });
+
+
+    
+    // Get firebase databse
+    const db = getFirestore(app);
+
+    //navigate
+    const navigate = useNavigate();
 
 
      // alert state
@@ -59,29 +91,60 @@ const Student = ({ setAuthcheck }) => {
       });
 
     }else{
+
+        // image uploading system
+        let file_name = new Date().getTime() + file.name;
+        const imgRef = ref(storage, 'students/' + file_name); 
+        const uploadedFile = uploadBytesResumable(imgRef, file);
+
+        uploadedFile.on("state_change", (snapshot) => {
+
+        }, (error) => {
+
+        }, () => {
+
+            getDownloadURL(uploadedFile.snapshot.ref).then( filePath => {
+
+                // Data Store
+                addDoc(collection(db, "users"), {
+
+                    name : studentinput.name,
+                    gender : studentinput.gender,
+                    photo : filePath
+
+                });
+
+            });
+
+        });
+
         
-        // Data Store
-        await addDoc(collection(db, "users"), {
+        
 
-        name : studentinput.name,
-        gender : studentinput.gender,
-        photo : studentinput.photo
-
-      });
-
+      // empty feilds
       setStudentinput({
         name : '',
         gender : '',
         photo : ''
       });
 
+      setPreview('');
+      rmv_btn.style.display = "none";
+
     }
+
+
+    e.target.reset();
 
 
   }
 
   // Get all data state
   const [students, setStudents] = useState([]);
+
+
+
+
 
   // get all data form firebase store
   useEffect(() => {
@@ -130,9 +193,10 @@ const Student = ({ setAuthcheck }) => {
 
                                 <Form.Group>
                                     <Form.Label>Photo</Form.Label>
-                                    <Form.Control value={ studentinput.photo } onChange={ e => setStudentinput({ ...studentinput, photo : e.target.value }) }></Form.Control>
+                                    <input type="file" className='form-control' onChange={ (e) => handlerFileManage(e) }/>
+                                    <img style={{ maxWidth : '100%' }} src={ preview } alt="" />
+                                    <Button id='rmv_btn' className='btn btn-sm btn-primay' style={{ display : 'none' }} onClick={ (e) => handleRmvImg(e) }>Remove</Button>
                                 </Form.Group>
-                                <br />
                                 <Form.Group>
                                     <Button variant='info' type='submit'>Submit</Button>
                                 </Form.Group>
